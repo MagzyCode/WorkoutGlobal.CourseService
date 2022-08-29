@@ -12,7 +12,7 @@ using WorkoutGlobal.CourseService.Api.DbContext;
 namespace WorkoutGlobal.CourseService.Api.Migrations
 {
     [DbContext(typeof(CourseServiceContext))]
-    [Migration("20220829105103_InitMigration")]
+    [Migration("20220829140518_InitMigration")]
     partial class InitMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,7 +50,7 @@ namespace WorkoutGlobal.CourseService.Api.Migrations
                     b.ToTable("Courses");
                 });
 
-            modelBuilder.Entity("WorkoutGlobal.CourseService.Api.Models.CourseLesson", b =>
+            modelBuilder.Entity("WorkoutGlobal.CourseService.Api.Models.Lesson", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -78,7 +78,7 @@ namespace WorkoutGlobal.CourseService.Api.Migrations
                     b.ToTable("CourseLessons");
                 });
 
-            modelBuilder.Entity("WorkoutGlobal.CourseService.Api.Models.CourseLesson", b =>
+            modelBuilder.Entity("WorkoutGlobal.CourseService.Api.Models.Lesson", b =>
                 {
                     b.HasOne("WorkoutGlobal.CourseService.Api.Models.Course", "Course")
                         .WithMany("CourseLessons")

@@ -26,7 +26,7 @@ namespace WorkoutGlobal.CourseService.Api.DbContext
 
             #region Relations
 
-            modelBuilder.Entity<CourseLesson>()
+            modelBuilder.Entity<Lesson>()
                 .HasOne(lesson => lesson.Course)
                 .WithMany(course => course.CourseLessons)
                 .HasForeignKey(lesson => lesson.CourseId)
@@ -43,6 +43,6 @@ namespace WorkoutGlobal.CourseService.Api.DbContext
         /// <summary>
         /// Represents table of course lessons.
         /// </summary>
-        public DbSet<CourseLesson> CourseLessons { get; set; }
+        public DbSet<Lesson> CourseLessons { get; set; }
     }
 }

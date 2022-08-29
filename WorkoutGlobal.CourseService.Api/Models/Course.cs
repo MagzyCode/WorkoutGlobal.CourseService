@@ -1,9 +1,11 @@
-﻿namespace WorkoutGlobal.CourseService.Api.Models
+﻿using WorkoutGlobal.CourseService.Api.Contracts;
+
+namespace WorkoutGlobal.CourseService.Api.Models
 {
     /// <summary>
     /// Model of courses.
     /// </summary>
-    public class Course
+    public class Course : IModel<Guid>
     {
         /// <summary>
         /// Unique identifier of model.
@@ -38,6 +40,6 @@
         /// <summary>
         /// Represents collection of course lessons.
         /// </summary>
-        public ICollection<CourseLesson> CourseLessons { get; set; }
+        public ICollection<Lesson> CourseLessons { get; set; }
     }
 }

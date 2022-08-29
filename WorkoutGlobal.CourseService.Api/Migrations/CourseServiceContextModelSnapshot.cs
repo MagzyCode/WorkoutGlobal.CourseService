@@ -48,7 +48,7 @@ namespace WorkoutGlobal.CourseService.Api.Migrations
                     b.ToTable("Courses");
                 });
 
-            modelBuilder.Entity("WorkoutGlobal.CourseService.Api.Models.CourseLesson", b =>
+            modelBuilder.Entity("WorkoutGlobal.CourseService.Api.Models.Lesson", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -76,7 +76,7 @@ namespace WorkoutGlobal.CourseService.Api.Migrations
                     b.ToTable("CourseLessons");
                 });
 
-            modelBuilder.Entity("WorkoutGlobal.CourseService.Api.Models.CourseLesson", b =>
+            modelBuilder.Entity("WorkoutGlobal.CourseService.Api.Models.Lesson", b =>
                 {
                     b.HasOne("WorkoutGlobal.CourseService.Api.Models.Course", "Course")
                         .WithMany("CourseLessons")
