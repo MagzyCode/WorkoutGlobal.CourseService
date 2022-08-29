@@ -21,8 +21,9 @@ namespace WorkoutGlobal.CourseService.Api.Contracts
         /// Get model by id.
         /// </summary>
         /// <param name="id">Model id.</param>
+        /// <param name="trackChanges">Track changes state.</param>
         /// <returns>Returns model by given id.</returns>
-        public Task<TModel> GetAsync(TId id);
+        public Task<TModel> GetAsync(TId id, bool trackChanges);
 
         /// <summary>
         /// Get all models.

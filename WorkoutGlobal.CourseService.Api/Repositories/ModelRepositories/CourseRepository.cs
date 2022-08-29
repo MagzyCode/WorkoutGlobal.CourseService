@@ -3,7 +3,7 @@ using WorkoutGlobal.CourseService.Api.Contracts;
 using WorkoutGlobal.CourseService.Api.DbContext;
 using WorkoutGlobal.CourseService.Api.Models;
 
-namespace WorkoutGlobal.CourseService.Api.Repositories.ModelRepositories
+namespace WorkoutGlobal.CourseService.Api.Repositories
 {
     /// <summary>
     /// Represents repository for course model.
@@ -26,7 +26,7 @@ namespace WorkoutGlobal.CourseService.Api.Repositories.ModelRepositories
         /// </summary>
         /// <param name="creationModel">Creation model.</param>
         /// <returns>Return generated id for new model.</returns>
-        public async Task<Guid> CreateCourse(Course creationModel)
+        public async Task<Guid> CreateCourseAsync(Course creationModel)
         {
             var createdId = await CreateAsync(creationModel);
 
@@ -40,7 +40,7 @@ namespace WorkoutGlobal.CourseService.Api.Repositories.ModelRepositories
         /// </summary>
         /// <param name="id">Course id.</param>
         /// <returns></returns>
-        public async Task DeleteCourse(Guid id)
+        public async Task DeleteCourseAsync(Guid id)
         {
             await DeleteAsync(id);
             await SaveChangesAsync();
@@ -51,7 +51,7 @@ namespace WorkoutGlobal.CourseService.Api.Repositories.ModelRepositories
         /// </summary>
         /// <param name="courseId">Course id.</param>
         /// <returns>Returns collection of course lessons.</returns>
-        public async Task<IEnumerable<Lesson>> GetAllCourseLessons(Guid courseId)
+        public async Task<IEnumerable<Lesson>> GetAllCourseLessonsAsync(Guid courseId)
         {
             if (courseId == Guid.Empty)
                 throw new ArgumentOutOfRangeException(nameof(courseId), courseId, "Course id cannot be empty.");
@@ -67,7 +67,7 @@ namespace WorkoutGlobal.CourseService.Api.Repositories.ModelRepositories
         /// Get all courses.
         /// </summary>
         /// <returns>Returns collection of all courses.</returns>
-        public async Task<IEnumerable<Course>> GetAllCourses()
+        public async Task<IEnumerable<Course>> GetAllCoursesAsync()
         {
             var models = await GetAll().ToListAsync();
 
@@ -78,10 +78,11 @@ namespace WorkoutGlobal.CourseService.Api.Repositories.ModelRepositories
         /// Get course by id.
         /// </summary>
         /// <param name="id">Course id.</param>
+        /// <param name="trackChanges">Tracking model change.</param>
         /// <returns>Returns course by given id.</returns>
-        public async Task<Course> GetCourse(Guid id)
+        public async Task<Course> GetCourseAsync(Guid id, bool trackChanges = true)
         {
-            var model = await GetAsync(id);
+            var model = await GetAsync(id, trackChanges);
 
             return model;
         }
@@ -91,7 +92,7 @@ namespace WorkoutGlobal.CourseService.Api.Repositories.ModelRepositories
         /// </summary>
         /// <param name="course">Updation course.</param>
         /// <returns></returns>
-        public async Task UpdateCourse(Course course)
+        public async Task UpdateCourseAsync(Course course)
         {
             Update(course);
             await SaveChangesAsync();

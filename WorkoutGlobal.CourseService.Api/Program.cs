@@ -25,6 +25,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.ConfigureSqlContext(builder.Configuration);
+builder.Services.ConfigureRepositories();
+builder.Services.ConfigureAttributes();
 
 var app = builder.Build();
 

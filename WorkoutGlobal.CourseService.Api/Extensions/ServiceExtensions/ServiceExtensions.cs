@@ -1,5 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WorkoutGlobal.CourseService.Api.Contracts;
 using WorkoutGlobal.CourseService.Api.DbContext;
+using WorkoutGlobal.CourseService.Api.Filters.ActionFilters;
+using WorkoutGlobal.CourseService.Api.Repositories;
 
 namespace WorkoutGlobal.CourseService.Api.Extensions
 {
@@ -18,5 +21,21 @@ namespace WorkoutGlobal.CourseService.Api.Extensions
                 opts => opts.UseNpgsql(
                     connectionString: configuration.GetConnectionString("CourseConnectionString"),
                     npgsqlOptionsAction: b => b.MigrationsAssembly("WorkoutGlobal.CourseService.Api")));
+
+        /// <summary>
+        /// Configure instances of repository classes.
+        /// </summary>
+        /// <param name="services">Project services.</param>
+        public static void ConfigureRepositories(this IServiceCollection services)
+        {
+            services.AddScoped<ICourseRepository, CourseRepository>();
+            services.AddScoped<ILessonRepository, LessonRepository>();
+        }
+
+        /// <summary>
+        /// Configure instances of attributes.
+        /// </summary>
+        /// <param name="services">Project services.</param>
+        public static void ConfigureAttributes(this IServiceCollection services) => services.AddScoped<ModelValidationFilterAttribute>();
     }
 }

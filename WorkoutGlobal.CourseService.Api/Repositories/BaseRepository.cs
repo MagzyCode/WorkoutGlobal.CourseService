@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
 using WorkoutGlobal.CourseService.Api.Contracts;
 using WorkoutGlobal.CourseService.Api.DbContext;
 
@@ -91,13 +91,18 @@ namespace WorkoutGlobal.CourseService.Api.Repositories
         /// Get model by id.
         /// </summary>
         /// <param name="id">Model id.</param>
+        /// <param name="trackChanges">Tracking model state.</param>
         /// <returns>Returns model by given id.</returns>
-        public async Task<TModel> GetAsync(TId id)
+        public async Task<TModel> GetAsync(TId id, bool trackChanges = true)
         {
             if (EqualityComparer<TId>.Default.Equals(id, default))
                 throw new ArgumentNullException(nameof(id), "Searchable id cannot have default value.");
 
-            var model = await Context.Set<TModel>().FindAsync(id);
+            var model = trackChanges
+                ? await Context.Set<TModel>().FindAsync(id)
+                : await Context.Set<TModel>().AsNoTracking()
+                    .Where(x => EqualityComparer<TId>.Default.Equals(id, x.Id))
+                    .FirstOrDefaultAsync();
 
             return model;
         }

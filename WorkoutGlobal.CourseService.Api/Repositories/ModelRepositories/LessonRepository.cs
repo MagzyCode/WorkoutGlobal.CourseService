@@ -13,7 +13,7 @@ namespace WorkoutGlobal.CourseService.Api.Repositories
             : base(configuration, context)
         { }
 
-        public async Task<Guid> CreateLesson(Lesson courseLesson)
+        public async Task<Guid> CreateLessonAsync(Lesson courseLesson)
         {
             var createdId = await CreateAsync(courseLesson);
 
@@ -22,27 +22,27 @@ namespace WorkoutGlobal.CourseService.Api.Repositories
             return createdId;
         }
 
-        public async Task DeleteLesson(Guid id)
+        public async Task DeleteLessonAsync(Guid id)
         {
             await DeleteAsync(id);
             await SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Lesson>> GetAllLessons()
+        public async Task<IEnumerable<Lesson>> GetAllLessonsAsync()
         {
             var models = await GetAll().ToListAsync();
 
             return models;
         }
 
-        public async Task<Lesson> GetLesson(Guid id)
+        public async Task<Lesson> GetLessonAsync(Guid id)
         {
             var model = await GetAsync(id);
 
             return model;
         }
 
-        public async Task<Course> GetLessonCourse(Guid lessonId)
+        public async Task<Course> GetLessonCourseAsync(Guid lessonId)
         {
             var lesson = await GetAsync(lessonId);
 
@@ -53,7 +53,7 @@ namespace WorkoutGlobal.CourseService.Api.Repositories
             return course;
         }
 
-        public async Task UpdateLesson(Lesson courseLesson)
+        public async Task UpdateLessonAsync(Lesson courseLesson)
         {
             Update(courseLesson);
 
