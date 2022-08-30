@@ -8,6 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WorkoutGlobal.CourseService.Api.DbContext;
 
 #nullable disable
+#pragma warning disable 1591
 
 namespace WorkoutGlobal.CourseService.Api.Migrations
 {

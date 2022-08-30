@@ -8,62 +8,64 @@ using WorkoutGlobal.CourseService.Api.Models;
 namespace WorkoutGlobal.CourseService.Api.Controllers
 {
     /// <summary>
-    /// Represents course controller.
+    /// Represents lesson controller.
     /// </summary>
-    [Route("api/courses")]
+    [Route("api/lessons")]
     [ApiController]
     [Produces("application/json")]
-    public class CourseController : ControllerBase
+    public class LessonController : ControllerBase
     {
-        private ICourseRepository _courseRepository;
         private IMapper _mapper;
+        private ILessonRepository _lessonRepository;
 
         /// <summary>
-        /// Ctor for course controller.
+        /// Ctor for lesson controller.
         /// </summary>
-        /// <param name="courseRepository">Course repository.</param>
+        /// <param name="lessonRepository">Lesson repository instanse.</param>
         /// <param name="mapper">AutoMapper instanse.</param>
-        public CourseController(
-            ICourseRepository courseRepository,
+        public LessonController(
+            ILessonRepository lessonRepository,
             IMapper mapper)
         {
-            CourseRepository = courseRepository;
             Mapper = mapper;
+            LessonRepository = lessonRepository;
         }
 
         /// <summary>
-        /// Repository manager.
-        /// </summary>
-        public ICourseRepository CourseRepository
-        {
-            get => _courseRepository;
-            private set => _courseRepository = value ?? throw new NullReferenceException(nameof(value));
-        }
-
-        /// <summary>
-        /// Auto mapping helper.
+        /// AutoMapper property.
         /// </summary>
         public IMapper Mapper
         {
             get => _mapper;
-            private set => _mapper = value ?? throw new NullReferenceException(nameof(value));
+            set => _mapper = value
+                ?? throw new NullReferenceException("AutoMapper instanse cannot be null.");
         }
 
         /// <summary>
-        /// Get course by id.
+        /// Lesson repository instanse.
         /// </summary>
-        /// <param name="id">Course id.</param>
-        /// <returns>Returns course by given id.</returns>
-        /// <response code="200">Course was successfully get.</response>
+        public ILessonRepository LessonRepository
+        {
+            get => _lessonRepository;
+            set => _lessonRepository = value
+                ?? throw new NullReferenceException("Lesson repository instanse cannot be null.");
+        }
+
+        /// <summary>
+        /// Get lesson by id.
+        /// </summary>
+        /// <param name="id">Lesson id.</param>
+        /// <returns>Returns lesson by given id.</returns>
+        /// <response code="200">Lesson was successfully get.</response>
         /// <response code="400">Params of request is uncorrect.</response>
         /// <response code="404">Model don't exists.</response>
         /// <response code="500">Something wrong happen on server.</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(type: typeof(CourseDto), statusCode: StatusCodes.Status200OK)]
+        [ProducesResponseType(type: typeof(LessonDto), statusCode: StatusCodes.Status200OK)]
         [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status400BadRequest)]
         [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status404NotFound)]
         [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCourse(Guid id)
+        public async Task<IActionResult> GetLesson(Guid id)
         {
             if (id == Guid.Empty)
                 return BadRequest(new ErrorDetails()
@@ -73,9 +75,9 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
                     Details = "Searchable model cannot be found because id is empty."
                 });
 
-            var course = await CourseRepository.GetCourseAsync(id);
+            var lesson = await LessonRepository.GetLessonAsync(id);
 
-            if (course is null)
+            if (lesson is null)
                 return NotFound(new ErrorDetails()
                 {
                     StatusCode = StatusCodes.Status404NotFound,
@@ -83,55 +85,57 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
                     Details = "Cannot find model with given id."
                 });
 
-            var courseDto = Mapper.Map<CourseDto>(course);
+            var lessonDto = Mapper.Map<LessonDto>(lesson);
 
-            return Ok(courseDto);
+            return Ok(lessonDto);
         }
 
         /// <summary>
-        /// Get all courses.
+        /// Get all lessons.
         /// </summary>
-        /// <returns>Returns collection of courses.</returns>
-        /// <response code="200">Courses was successfully get.</response>
+        /// <returns>Returns all lessons.</returns>
+        /// <response code="200">Lessons were successfully get.</response>
         /// <response code="500">Something wrong happen on server.</response>
         [HttpGet]
-        [ProducesResponseType(type: typeof(IEnumerable<CourseDto>), statusCode: StatusCodes.Status200OK)]
+        [ProducesResponseType(type: typeof(IEnumerable<LessonDto>), statusCode: StatusCodes.Status200OK)]
         [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllCourse()
+        public async Task<IActionResult> GetAllLesson()
         {
-            var courses = await CourseRepository.GetAllCoursesAsync();
+            var lessons = await LessonRepository.GetAllLessonsAsync();
 
-            var courseDtos = Mapper.Map<IEnumerable<CourseDto>>(courses);
+            var lessonDto = Mapper.Map<IEnumerable<LessonDto>>(lessons);
 
-            return Ok(courseDtos);
+            return Ok(lessonDto);
         }
 
         /// <summary>
-        /// Create course.
+        /// Create lesson.
         /// </summary>
-        /// <param name="creationCourseDto">Creation model.</param>
-        /// <returns>Returns location hidder and string with string-id.</returns>
-        /// <response code="201">Course was successfully created.</response>
+        /// <param name="creationLessonDto">Creation model.</param>
+        /// <returns>Returns created id.</returns>
+        /// <response code="201">Lesson was successfully created.</response>
+        /// <response code="400">Params of request is uncorrect.</response>
         /// <response code="500">Something wrong happen on server.</response>
         [HttpPost]
         [ModelValidationFilter]
         [ProducesResponseType(type: typeof(string), statusCode: StatusCodes.Status201Created)]
         [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateCourse([FromBody] CreationCourseDto creationCourseDto)
+        [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> CreateLesson([FromBody] CreationLessonDto creationLessonDto)
         {
-            var creationCourse = _mapper.Map<Course>(creationCourseDto);
+            var creationCourse = Mapper.Map<Lesson>(creationLessonDto);
 
-            var createdId = await CourseRepository.CreateCourseAsync(creationCourse);
+            var createdId = await LessonRepository.CreateLessonAsync(creationCourse);
 
             return Created($"api/courses/{createdId}", createdId);
         }
 
         /// <summary>
-        /// Delete course by id.
+        /// Delete lesson.
         /// </summary>
-        /// <param name="id">Course id.</param>
+        /// <param name="id">Lesson id.</param>
         /// <returns>Returns status code.</returns>
-        /// <response code="204">Course was successfully deleted.</response>
+        /// <response code="204">Lesson was successfully deleted.</response>
         /// <response code="400">Params of request is uncorrect.</response>
         /// <response code="404">Model don't exists.</response>
         /// <response code="500">Something wrong happen on server.</response>
@@ -140,7 +144,7 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
         [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status400BadRequest)]
         [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status404NotFound)]
         [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteCourse(Guid id)
+        public async Task<IActionResult> DeleteLesson(Guid id)
         {
             if (id == Guid.Empty)
                 return BadRequest(new ErrorDetails()
@@ -150,9 +154,9 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
                     Details = "Searchable model cannot be found because id is empty."
                 });
 
-            var course = await CourseRepository.GetCourseAsync(id);
+            var lesson = await LessonRepository.GetLessonAsync(id);
 
-            if (course is null)
+            if (lesson is null)
                 return NotFound(new ErrorDetails()
                 {
                     StatusCode = StatusCodes.Status404NotFound,
@@ -160,28 +164,28 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
                     Details = "Cannot find model with given id."
                 });
 
-            await CourseRepository.DeleteCourseAsync(id);
+            await LessonRepository.DeleteLessonAsync(id);
 
             return NoContent();
         }
 
         /// <summary>
-        /// Update course.
+        /// Update lesson.
         /// </summary>
-        /// <param name="id">Course id.</param>
-        /// <param name="updationCourseDto">Updation course.</param>
+        /// <param name="id">Updation id.</param>
+        /// <param name="updationLessonDto">Updation model.</param>
         /// <returns></returns>
-        /// <response code="204">Course was successfully updated.</response>
+        /// <response code="204">Lesson was successfully updated.</response>
         /// <response code="400">Params of request is uncorrect.</response>
         /// <response code="404">Model don't exists.</response>
         /// <response code="500">Something wrong happen on server.</response>
-        [HttpPut]
+        [HttpPut("{id}")]
         [ModelValidationFilter]
         [ProducesResponseType(type: typeof(int), statusCode: StatusCodes.Status204NoContent)]
         [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status400BadRequest)]
         [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status404NotFound)]
         [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateCourse(Guid id, [FromBody] UpdationCourseDto updationCourseDto)
+        public async Task<IActionResult> UpdateLesson(Guid id, [FromBody] UpdationLessonDto updationLessonDto)
         {
             if (id == Guid.Empty)
                 return BadRequest(new ErrorDetails()
@@ -191,9 +195,9 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
                     Details = "Searchable model cannot be found because id is empty."
                 });
 
-            var course = await CourseRepository.GetCourseAsync(id, false);
+            var lesson = await LessonRepository.GetLessonAsync(id);
 
-            if (course is null)
+            if (lesson is null)
                 return NotFound(new ErrorDetails()
                 {
                     StatusCode = StatusCodes.Status404NotFound,
@@ -202,29 +206,29 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
                 });
 
             // TODO: Check that object no tracked and exception don't throw.
-            course = Mapper.Map<Course>(updationCourseDto);
-            course.Id = id;
+            lesson = Mapper.Map<Lesson>(updationLessonDto);
+            lesson.Id = id;
 
-            await CourseRepository.UpdateCourseAsync(course);
+            await LessonRepository.UpdateLessonAsync(lesson);
 
             return NoContent();
         }
 
         /// <summary>
-        /// Get course lessons.
+        /// Get lesson course.
         /// </summary>
-        /// <param name="id">Course id.</param>
-        /// <returns></returns>
-        /// <response code="200">Course lessons was successfully get.</response>
+        /// <param name="id">Lesson id.</param>
+        /// <returns>Returns lesson course.</returns>
+        /// <response code="200">Lesson course was successfully get.</response>
         /// <response code="400">Params of request is uncorrect.</response>
         /// <response code="404">Model don't exists.</response>
         /// <response code="500">Something wrong happen on server.</response>
-        [HttpGet("{id}/lessons")]
-        [ProducesResponseType(type: typeof(IEnumerable<LessonDto>), statusCode: StatusCodes.Status200OK)]
+        [HttpGet("{id}/course")]
+        [ProducesResponseType(type: typeof(CourseDto), statusCode: StatusCodes.Status200OK)]
         [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status400BadRequest)]
         [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status404NotFound)]
         [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCourseLessons(Guid id)
+        public async Task<IActionResult> GetLessonCourse(Guid id)
         {
             if (id == Guid.Empty)
                 return BadRequest(new ErrorDetails()
@@ -234,9 +238,9 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
                     Details = "Searchable model cannot be found because id is empty."
                 });
 
-            var course = await CourseRepository.GetCourseAsync(id, false);
+            var lesson = await LessonRepository.GetLessonAsync(id);
 
-            if (course is null)
+            if (lesson is null)
                 return NotFound(new ErrorDetails()
                 {
                     StatusCode = StatusCodes.Status404NotFound,
@@ -244,11 +248,11 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
                     Details = "Cannot find model with given id."
                 });
 
-            var lessons = await CourseRepository.GetAllCourseLessonsAsync(id);
+            var course = await LessonRepository.GetLessonCourseAsync(id);
 
-            var lessonsDto = Mapper.Map<IEnumerable<LessonDto>>(lessons);
+            var courseDto = Mapper.Map<CourseDto>(course);
 
-            return Ok(lessonsDto);
+            return Ok(courseDto);
         }
 
     }

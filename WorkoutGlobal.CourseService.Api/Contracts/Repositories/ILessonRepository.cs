@@ -2,14 +2,18 @@
 
 namespace WorkoutGlobal.CourseService.Api.Contracts
 {
+    /// <summary>
+    /// Represents basic interface for lesson repository.
+    /// </summary>
     public interface ILessonRepository
     {
         /// <summary>
         /// Get lesson by id.
         /// </summary>
         /// <param name="id">Lesson id.</param>
+        /// <param name="trackChanges">Tracking changes state.</param>
         /// <returns>Returns lesson by given id.</returns>
-        public Task<Lesson> GetLessonAsync(Guid id);
+        public Task<Lesson> GetLessonAsync(Guid id, bool trackChanges = true);
 
         /// <summary>
         /// Get all lessons.

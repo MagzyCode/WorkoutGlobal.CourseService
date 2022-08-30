@@ -19,6 +19,8 @@ namespace WorkoutGlobal.CourseService.Api.AutoMapper
             CreateMap<UpdationCourseDto, Course>();
 
             CreateMap<Lesson, LessonDto>();
+            CreateMap<CreationCourseDto, Lesson>();
+            CreateMap<UpdationCourseDto, Lesson>();
         }
     }
 }
