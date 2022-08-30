@@ -211,7 +211,46 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Get course lessons.
+        /// </summary>
+        /// <param name="id">Course id.</param>
+        /// <returns></returns>
+        /// <response code="200">Course lessons was successfully get.</response>
+        /// <response code="400">Params of request is uncorrect.</response>
+        /// <response code="404">Model don't exists.</response>
+        /// <response code="500">Something wrong happen on server.</response>
+        [HttpGet("{id}/lessons")]
+        [ProducesResponseType(type: typeof(IEnumerable<LessonDto>), statusCode: StatusCodes.Status200OK)]
+        [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status404NotFound)]
+        [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetCourseLessons(Guid id)
+        {
+            if (id == Guid.Empty)
+                return BadRequest(new ErrorDetails()
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Id is empty.",
+                    Details = "Searchable model cannot be found because id is empty."
+                });
 
+            var course = await CourseRepository.GetCourseAsync(id);
+
+            if (course is null)
+                return NotFound(new ErrorDetails()
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = "Model not found",
+                    Details = "Cannot find model with given id."
+                });
+
+            var lessons = await CourseRepository.GetAllCourseLessonsAsync(id);
+
+            var lessonsDto = Mapper.Map<IEnumerable<LessonDto>>(lessons);
+
+            return Ok(lessonsDto);
+        }
 
     }
 }
