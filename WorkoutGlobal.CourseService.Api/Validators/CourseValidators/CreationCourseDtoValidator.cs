@@ -13,6 +13,8 @@ namespace WorkoutGlobal.CourseService.Api.Validators.CourseValidators
         /// </summary>
         public CreationCourseDtoValidator()
         {
+            RuleLevelCascadeMode = CascadeMode.Stop;
+
             RuleFor(course => course.Name)
                 .NotEmpty()
                 .Length(5, 200);

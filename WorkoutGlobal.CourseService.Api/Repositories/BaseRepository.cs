@@ -32,8 +32,7 @@ namespace WorkoutGlobal.CourseService.Api.Repositories
         public IConfiguration Configuration
         {
             get => _configuration;
-            private set => _configuration = value 
-                ?? throw new NullReferenceException("Project configuration cannot be null.");
+            private set => _configuration = value;
         }
 
         /// <summary>
@@ -42,8 +41,7 @@ namespace WorkoutGlobal.CourseService.Api.Repositories
         public CourseServiceContext Context
         {
             get => _context;
-            private set => _context = value
-                ?? throw new NullReferenceException("Database context cannot be null.");
+            private set => _context = value;
         }
 
         /// <summary>

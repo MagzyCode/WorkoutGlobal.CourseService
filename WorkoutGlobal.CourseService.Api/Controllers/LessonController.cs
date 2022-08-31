@@ -81,7 +81,7 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
                 return NotFound(new ErrorDetails()
                 {
                     StatusCode = StatusCodes.Status404NotFound,
-                    Message = "Model not found",
+                    Message = "Model not found.",
                     Details = "Cannot find model with given id."
                 });
 
@@ -99,7 +99,7 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
         [HttpGet]
         [ProducesResponseType(type: typeof(IEnumerable<LessonDto>), statusCode: StatusCodes.Status200OK)]
         [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllLesson()
+        public async Task<IActionResult> GetAllLessons()
         {
             var lessons = await LessonRepository.GetAllLessonsAsync();
 
@@ -127,7 +127,7 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
 
             var createdId = await LessonRepository.CreateLessonAsync(creationCourse);
 
-            return Created($"api/courses/{createdId}", createdId);
+            return Created($"api/lessons/{createdId}", createdId);
         }
 
         /// <summary>
@@ -160,7 +160,7 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
                 return NotFound(new ErrorDetails()
                 {
                     StatusCode = StatusCodes.Status404NotFound,
-                    Message = "Model not found",
+                    Message = "Model not found.",
                     Details = "Cannot find model with given id."
                 });
 
@@ -201,7 +201,7 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
                 return NotFound(new ErrorDetails()
                 {
                     StatusCode = StatusCodes.Status404NotFound,
-                    Message = "Model not found",
+                    Message = "Model not found.",
                     Details = "Cannot find model with given id."
                 });
 
@@ -244,7 +244,7 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
                 return NotFound(new ErrorDetails()
                 {
                     StatusCode = StatusCodes.Status404NotFound,
-                    Message = "Model not found",
+                    Message = "Model not found.",
                     Details = "Cannot find model with given id."
                 });
 

@@ -54,7 +54,7 @@ namespace WorkoutGlobal.CourseService.Api.Repositories
         public async Task<IEnumerable<Lesson>> GetAllCourseLessonsAsync(Guid courseId)
         {
             if (courseId == Guid.Empty)
-                throw new ArgumentOutOfRangeException(nameof(courseId), courseId, "Course id cannot be empty.");
+                throw new ArgumentNullException(nameof(courseId), "Course id cannot be empty.");
 
             var lessons = await Context.CourseLessons
                 .Where(x => x.CourseId == courseId)
