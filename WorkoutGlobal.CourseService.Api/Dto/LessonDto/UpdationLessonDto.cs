@@ -24,10 +24,5 @@
         /// Identifier of video for course lesson.
         /// </summary>
         public string VideoId { get; set; }
-
-        /// <summary>
-        /// Represents course id for create relations.
-        /// </summary>
-        public Guid CourseId { get; set; }
     }
 }

@@ -23,7 +23,7 @@ namespace WorkoutGlobal.CourseService.UnitTests.Validators
             // assert
             validationResult.Should().BeOfType(typeof(ValidationResult));
             validationResult.Should().NotBeNull();
-            validationResult.Errors.Should().HaveCount(3);
+            validationResult.Errors.Should().HaveCount(2);
             validationResult.IsValid.Should().BeFalse();
         }
 
@@ -36,7 +36,6 @@ namespace WorkoutGlobal.CourseService.UnitTests.Validators
                 .With(x => x.SequenceNumber, 0)
                 .With(x => x.Content, string.Empty)
                 .With(x => x.VideoId, string.Empty)
-                .With(x => x.CourseId, Guid.Empty)
                 .Create();
 
             // act
@@ -45,7 +44,7 @@ namespace WorkoutGlobal.CourseService.UnitTests.Validators
             // assert
             validationResult.Should().BeOfType(typeof(ValidationResult));
             validationResult.Should().NotBeNull();
-            validationResult.Errors.Should().HaveCount(5);
+            validationResult.Errors.Should().HaveCount(4);
             validationResult.IsValid.Should().BeFalse();
         }
 
@@ -58,7 +57,6 @@ namespace WorkoutGlobal.CourseService.UnitTests.Validators
                 .With(x => x.SequenceNumber, 1)
                 .With(x => x.Content, "Lesson content")
                 .With(x => x.VideoId, $"5dsfkjh2r74dsjdhf3r4f")
-                .With(x => x.CourseId, Guid.NewGuid())
                 .Create();
 
             // act

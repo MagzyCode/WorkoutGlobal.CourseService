@@ -5,10 +5,7 @@ using System.Net;
 using WorkoutGlobal.CourseService.Api.Dto;
 using WorkoutGlobal.CourseService.Api.Models;
 using FluentAssertions;
-using System;
-using Microsoft.AspNetCore.Mvc;
 using FluentAssertions.Extensions;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace WorkoutGlobal.CourseService.IntegrationTests.Controllers
 {

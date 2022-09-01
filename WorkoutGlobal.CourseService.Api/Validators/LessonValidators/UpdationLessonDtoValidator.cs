@@ -34,9 +34,6 @@ namespace WorkoutGlobal.CourseService.Api.Validators.LessonValidators
                 RuleFor(lesson => lesson.VideoId)
                     .NotEmpty();
             });
-
-            RuleFor(lesson => lesson.CourseId)
-                .NotEmpty();
         }
     }
 }

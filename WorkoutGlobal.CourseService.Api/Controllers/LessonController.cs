@@ -195,7 +195,7 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
                     Details = "Searchable model cannot be found because id is empty."
                 });
 
-            var lesson = await LessonRepository.GetLessonAsync(id);
+            var lesson = await LessonRepository.GetLessonAsync(id, false);
 
             if (lesson is null)
                 return NotFound(new ErrorDetails()
@@ -205,8 +205,11 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
                     Details = "Cannot find model with given id."
                 });
 
+            var courseId = lesson.CourseId;
+
             lesson = Mapper.Map<Lesson>(updationLessonDto);
             lesson.Id = id;
+            lesson.CourseId = courseId;
 
             await LessonRepository.UpdateLessonAsync(lesson);
 
