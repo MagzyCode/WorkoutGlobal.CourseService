@@ -31,6 +31,9 @@ namespace WorkoutGlobal.CourseService.Api.Validators.CourseValidators
 
             RuleFor(course => course.CreatorId)
                 .NotEmpty();
+
+            RuleFor(course => course.CreationDate)
+                .NotEmpty();
         }
     }
 }

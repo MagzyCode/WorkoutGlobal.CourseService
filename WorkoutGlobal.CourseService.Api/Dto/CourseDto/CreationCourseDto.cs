@@ -26,5 +26,10 @@ namespace WorkoutGlobal.CourseService.Api.Dto
         /// Identifier of course creator.
         /// </summary>
         public Guid CreatorId { get; set; }
+
+        /// <summary>
+        /// Course creation date.
+        /// </summary>
+        public DateTime CreationDate { get; set; }
     }
 }

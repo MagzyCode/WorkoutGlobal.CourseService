@@ -99,7 +99,7 @@ namespace WorkoutGlobal.CourseService.Api.Repositories
             var model = trackChanges
                 ? await Context.Set<TModel>().FindAsync(id)
                 : await Context.Set<TModel>().AsNoTracking()
-                    .Where(x => EqualityComparer<TId>.Default.Equals(id, x.Id))
+                    .Where(x => x.Id.Equals(id))
                     .FirstOrDefaultAsync();
 
             return model;

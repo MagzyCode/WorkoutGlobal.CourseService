@@ -5,7 +5,9 @@ VisualStudioVersion = 17.3.32804.467
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkoutGlobal.CourseService.Api", "WorkoutGlobal.CourseService.Api\WorkoutGlobal.CourseService.Api.csproj", "{2D5F085C-886E-4AEA-ACDC-6DDE1A83FC56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkoutGlobal.CourseService.UnitTests", "WorkoutGlobal.CourseService.UnitTests\WorkoutGlobal.CourseService.UnitTests.csproj", "{0CDBD1FF-19CA-44E7-8D95-C366CFD79A38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkoutGlobal.CourseService.UnitTests", "WorkoutGlobal.CourseService.UnitTests\WorkoutGlobal.CourseService.UnitTests.csproj", "{0CDBD1FF-19CA-44E7-8D95-C366CFD79A38}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkoutGlobal.CourseService.IntegrationTests", "WorkoutGlobal.CourseService.IntegrationTests\WorkoutGlobal.CourseService.IntegrationTests.csproj", "{46E04364-742E-4DF7-A10C-9F402A9DA936}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{0CDBD1FF-19CA-44E7-8D95-C366CFD79A38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0CDBD1FF-19CA-44E7-8D95-C366CFD79A38}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0CDBD1FF-19CA-44E7-8D95-C366CFD79A38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46E04364-742E-4DF7-A10C-9F402A9DA936}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46E04364-742E-4DF7-A10C-9F402A9DA936}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46E04364-742E-4DF7-A10C-9F402A9DA936}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46E04364-742E-4DF7-A10C-9F402A9DA936}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

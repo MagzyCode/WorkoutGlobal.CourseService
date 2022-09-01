@@ -10,15 +10,10 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
     options.SuppressModelStateInvalidFilter = true;
 });
 
-// TODO: check that services for automaticaly validate models.
-#region AutoValidation
-
 builder.Services.AddControllers();
 builder.Services.AddFluentValidationAutoValidation()
     .AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
-
-#endregion
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

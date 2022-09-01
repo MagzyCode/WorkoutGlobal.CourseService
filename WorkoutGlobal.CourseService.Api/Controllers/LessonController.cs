@@ -205,7 +205,6 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
                     Details = "Cannot find model with given id."
                 });
 
-            // TODO: Check that object no tracked and exception don't throw.
             lesson = Mapper.Map<Lesson>(updationLessonDto);
             lesson.Id = id;
 
@@ -253,6 +252,46 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
             var courseDto = Mapper.Map<CourseDto>(course);
 
             return Ok(courseDto);
+        }
+
+        /// <summary>
+        /// Purge database for integration tests.
+        /// </summary>
+        /// <param name="id">Lesson id.</param>
+        /// <returns>Returns status code.</returns>
+        /// <response code="204">Lesson was successfully deleted.</response>
+        /// <response code="400">Params of request is uncorrect.</response>
+        /// <response code="404">Model don't exists.</response>
+        /// <response code="500">Something wrong happen on server.</response>
+        [HttpDelete("purge/{id}")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [ProducesResponseType(type: typeof(int), statusCode: StatusCodes.Status204NoContent)]
+        [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status404NotFound)]
+        [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Purge(Guid id)
+        {
+            if (id == Guid.Empty)
+                return BadRequest(new ErrorDetails()
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Id is empty.",
+                    Details = "Searchable model cannot be found because id is empty."
+                });
+
+            var lesson = await LessonRepository.GetLessonAsync(id);
+
+            if (lesson is null)
+                return NotFound(new ErrorDetails()
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = "Model not found.",
+                    Details = "Cannot find model with given id."
+                });
+
+            await LessonRepository.DeleteLessonAsync(id);
+
+            return NoContent();
         }
 
     }
