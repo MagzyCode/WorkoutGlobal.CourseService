@@ -24,7 +24,7 @@ namespace WorkoutGlobal.CourseService.UnitTests.Validators
             // assert
             validationResult.Should().BeOfType(typeof(ValidationResult));
             validationResult.Should().NotBeNull();
-            validationResult.Errors.Should().HaveCount(4);
+            validationResult.Errors.Should().HaveCount(5);
             validationResult.IsValid.Should().BeFalse();
         }
 
@@ -38,6 +38,7 @@ namespace WorkoutGlobal.CourseService.UnitTests.Validators
                 .With(x => x.Logo, Array.Empty<byte>())
                 .With(x => x.CreatorId, Guid.Empty)
                 .With(x => x.CreationDate, default(DateTime))
+                .With(x => x.CreatorFullName, string.Empty)
                 .Create();
 
             // act
@@ -46,7 +47,7 @@ namespace WorkoutGlobal.CourseService.UnitTests.Validators
             // assert
             validationResult.Should().BeOfType(typeof(ValidationResult));
             validationResult.Should().NotBeNull();
-            validationResult.Errors.Should().HaveCount(5);
+            validationResult.Errors.Should().HaveCount(6);
             validationResult.IsValid.Should().BeFalse();
         }
 
@@ -60,6 +61,7 @@ namespace WorkoutGlobal.CourseService.UnitTests.Validators
                 .With(x => x.Logo, RandomNumberGenerator.GetBytes(100))
                 .With(x => x.CreatorId, Guid.NewGuid())
                 .With(x => x.CreationDate, DateTime.Now)
+                .With(x => x.CreatorFullName, "Creator")
                 .Create();
 
             // act

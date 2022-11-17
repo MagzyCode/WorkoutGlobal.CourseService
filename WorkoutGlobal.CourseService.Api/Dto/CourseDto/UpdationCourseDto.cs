@@ -24,5 +24,10 @@
         /// Identifier of course creator.
         /// </summary>
         public Guid CreatorId { get; set; }
+
+        /// <summary>
+        /// Creator full name.
+        /// </summary>
+        public string CreatorFullName { get; set; }
     }
 }
