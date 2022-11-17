@@ -26,6 +26,11 @@
         public Guid CreatorId { get; set; }
 
         /// <summary>
+        /// Creator full name.
+        /// </summary>
+        public string CreatorFullName { get; set; }
+
+        /// <summary>
         /// Official logotype of course.
         /// </summary>
         public byte[] Logo { get; set; }

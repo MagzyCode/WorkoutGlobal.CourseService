@@ -33,6 +33,12 @@ namespace WorkoutGlobal.CourseService.Api.Validators.LessonValidators
             {
                 RuleFor(lesson => lesson.VideoId)
                     .NotEmpty();
+
+                RuleFor(lesson => lesson.VideoTitle)
+                    .NotEmpty();
+
+                RuleFor(lesson => lesson.VideoDescription)
+                    .NotEmpty();
             });
         }
     }

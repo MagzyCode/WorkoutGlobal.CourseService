@@ -1,5 +1,4 @@
 ﻿using AutoFixture;
-using FluentAssertions.Extensions;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using System.Net.Http.Json;
@@ -33,6 +32,8 @@ namespace WorkoutGlobal.CourseService.IntegrationTests.Controllers
                 .With(x => x.CreatorId, Guid.NewGuid())
                 .With(x => x.Logo, image)
                 .With(x => x.CreationDate, DateTime.UtcNow)
+                .With(x => x.CreatorFullName, "Creator")
+                .With(x => x.CreationDate, DateTime.UtcNow)
                 .Create();
         }
 
@@ -44,6 +45,8 @@ namespace WorkoutGlobal.CourseService.IntegrationTests.Controllers
                 .With(x => x.Content, "Lesson test content")
                 .With(x => x.VideoId, "507f1f77bcf86cd799439011")
                 .With(x => x.CourseId, courseId)
+                .With(x => x.VideoTitle, "Video title")
+                .With(x => x.VideoDescription, "Video description")
                 .Create();
         }
 

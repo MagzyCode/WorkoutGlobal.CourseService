@@ -32,6 +32,7 @@ namespace WorkoutGlobal.CourseService.IntegrationTests.Controllers
                 .With(x => x.CreatorId, Guid.NewGuid())
                 .With(x => x.Logo, image)
                 .With(x => x.CreationDate, DateTime.UtcNow)
+                .With(x => x.CreatorFullName, "Creator")
                 .Create();
         }
 
@@ -234,11 +235,9 @@ namespace WorkoutGlobal.CourseService.IntegrationTests.Controllers
 
             var updateImage = await File.ReadAllBytesAsync(_appTestConnection.Configuration["UpdateImagePath"]);
             var date = DateTime.UtcNow;
-            var guid = Guid.NewGuid();
             var updationModel = _fixture.Build<UpdationCourseDto>()
                 .With(x => x.Name, "Update test course")
                 .With(x => x.Description, "Update test description")
-                .With(x => x.CreatorId, guid)
                 .With(x => x.Logo, updateImage)
                 .Create();
 
@@ -256,7 +255,6 @@ namespace WorkoutGlobal.CourseService.IntegrationTests.Controllers
             result.Id.Should().NotBeEmpty();
             result.Name.Should().Be("Update test course");
             result.Description.Should().Be("Update test description");
-            result.CreatorId.Should().Be(guid);
             result.Logo.Should().BeEquivalentTo(updateImage);
         }
 

@@ -24,5 +24,15 @@
         /// Identifier of video for course lesson.
         /// </summary>
         public string VideoId { get; set; }
+
+        /// <summary>
+        /// Course video title.
+        /// </summary>
+        public string VideoTitle { get; set; }
+
+        /// <summary>
+        /// Course video description.
+        /// </summary>
+        public string VideoDescription { get; set; }
     }
 }
