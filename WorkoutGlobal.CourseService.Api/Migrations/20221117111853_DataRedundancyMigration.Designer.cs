@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WorkoutGlobal.CourseService.Api.DbContext;
@@ -11,9 +12,10 @@ using WorkoutGlobal.CourseService.Api.DbContext;
 namespace WorkoutGlobal.CourseService.Api.Migrations
 {
     [DbContext(typeof(CourseServiceContext))]
-    partial class CourseServiceContextModelSnapshot : ModelSnapshot
+    [Migration("20221117111853_DataRedundancyMigration")]
+    partial class DataRedundancyMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

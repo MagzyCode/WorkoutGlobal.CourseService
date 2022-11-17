@@ -33,6 +33,16 @@ namespace WorkoutGlobal.CourseService.Api.Models
         public string VideoId { get; set; }
 
         /// <summary>
+        /// Course video title.
+        /// </summary>
+        public string VideoTitle { get; set; }
+
+        /// <summary>
+        /// Course video description.
+        /// </summary>
+        public string VideoDescription { get; set; }
+
+        /// <summary>
         /// Represents course id for create relations.
         /// </summary>
         public Guid CourseId { get; set; }
