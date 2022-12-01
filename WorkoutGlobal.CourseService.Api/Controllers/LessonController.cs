@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using WorkoutGlobal.CourseService.Api.Contracts;
 using WorkoutGlobal.CourseService.Api.Dto;
 using WorkoutGlobal.CourseService.Api.Filters.ActionFilters;
 using WorkoutGlobal.CourseService.Api.Models;
+using WorkoutGlobal.CourseService.Api.Repositories;
 
 namespace WorkoutGlobal.CourseService.Api.Controllers
 {
@@ -255,6 +257,47 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
             var courseDto = Mapper.Map<CourseDto>(course);
 
             return Ok(courseDto);
+        }
+
+        /// <summary>
+        /// Partial update of video info in lesson models.
+        /// </summary>
+        /// <param name="updationVideoId">Video id.</param>
+        /// <param name="patchDocument">Patch document.</param>
+        /// <returns></returns>
+        /// <response code="204">Lesson was successfully patched.</response>
+        /// <response code="400">Incoming id isn't valid.</response>
+        /// <response code="500">Something going wrong on server.</response>
+        [HttpPatch("{updationVideoId}")]
+        [ProducesResponseType(type: typeof(int), statusCode: StatusCodes.Status204NoContent)]
+        [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateLessonsVideoInfo(string updationVideoId, [FromBody] JsonPatchDocument<UpdationLessonDto> patchDocument)
+        {
+            if (patchDocument is null)
+                return BadRequest(new ErrorDetails()
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Patch document is null",
+                    Details = "Patch document for partial updaton of course model is null."
+                });
+
+            if (string.IsNullOrEmpty(updationVideoId))
+                return BadRequest(new ErrorDetails()
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Video id is empty or null.",
+                    Details = "Id of video cannot be empty."
+                });
+
+            var updationDto = new UpdationLessonDto();
+            patchDocument.ApplyTo(updationDto);
+
+            var updationModel = Mapper.Map<Lesson>(updationDto);
+
+            await LessonRepository.UpdateLessonsVideoInfoAsync(updationVideoId, updationModel);
+
+            return NoContent();
         }
 
         /// <summary>

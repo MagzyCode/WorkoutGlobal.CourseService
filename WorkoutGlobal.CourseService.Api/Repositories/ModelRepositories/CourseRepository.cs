@@ -97,5 +97,38 @@ namespace WorkoutGlobal.CourseService.Api.Repositories
             Update(course);
             await SaveChangesAsync();
         }
+
+        /// <summary>
+        /// Update account courses info.
+        /// </summary>
+        /// <param name="updationAccountId">Updation account id.</param>
+        /// <param name="updateModel">Updation model.</param>
+        /// <returns></returns>
+        public async Task UpdateAccountCoursesAsync(Guid updationAccountId, Course updateModel)
+        {
+            var coursesForUpdate = await Context.Courses
+                .Where(course => course.CreatorId == updationAccountId)
+                .ToListAsync();
+
+            foreach (var course in coursesForUpdate)
+                course.CreatorFullName = updateModel.CreatorFullName;
+
+            await SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Delete account courses.
+        /// </summary>
+        /// <param name="deletionAccountId">Deletion account id.</param>
+        /// <returns></returns>
+        public async Task DeleteAccountCoursesAsync(Guid deletionAccountId)
+        {
+            var coursesForUpdate = Context.Courses
+                .Where(course => course.CreatorId == deletionAccountId);
+
+            Context.Courses.RemoveRange(coursesForUpdate);
+
+            await SaveChangesAsync();
+        }
     }
 }

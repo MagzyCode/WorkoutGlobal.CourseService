@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using System.Xml.XPath;
 using WorkoutGlobal.CourseService.Api.Contracts;
 using WorkoutGlobal.CourseService.Api.Dto;
 using WorkoutGlobal.CourseService.Api.Filters.ActionFilters;
@@ -251,6 +253,74 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
             var lessonsDto = Mapper.Map<IEnumerable<LessonDto>>(lessons);
 
             return Ok(lessonsDto);
+        }
+
+        /// <summary>
+        /// Partial update of user info in course models.
+        /// </summary>
+        /// <param name="updationCreatorId">Creator id.</param>
+        /// <param name="patchDocument">Patch document.</param>
+        /// <returns></returns>
+        /// <response code="204">Course was successfully patched.</response>
+        /// <response code="400">Incoming id isn't valid.</response>
+        /// <response code="500">Something going wrong on server.</response>
+        [HttpPatch("{updationCreatorId}")]
+        [ProducesResponseType(type: typeof(int), statusCode: StatusCodes.Status204NoContent)]
+        [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateCreator(Guid updationCreatorId, [FromBody] JsonPatchDocument<UpdationCourseDto> patchDocument)
+        {
+            if (patchDocument is null)
+                return BadRequest(new ErrorDetails()
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Patch document is null",
+                    Details = "Patch document for partial updaton of course model is null."
+                });
+
+            if (updationCreatorId == Guid.Empty)
+                return BadRequest(new ErrorDetails()
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Creator account id is empty.",
+                    Details = "Id of creator account cannot be empty."
+                });
+
+            var updationDto = new UpdationCourseDto();
+            patchDocument.ApplyTo(updationDto);
+
+            var updationModel = Mapper.Map<Course>(updationDto);
+
+            await CourseRepository.UpdateAccountCoursesAsync(updationCreatorId, updationModel);
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Delete account courses.
+        /// </summary>
+        /// <param name="deletionAccountId">Deleted account id.</param>
+        /// <returns></returns>
+        /// <response code="204">Courses was successfully deleted.</response>
+        /// <response code="400">Incoming id isn't valid.</response>
+        /// <response code="500">Something going wrong on server.</response>
+        [HttpDelete("creators/{deletionAccountId}")]
+        [ProducesResponseType(type: typeof(int), statusCode: StatusCodes.Status204NoContent)]
+        [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteUserVideos(Guid deletionAccountId)
+        {
+            if (deletionAccountId == Guid.Empty)
+                return BadRequest(new ErrorDetails()
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Creator account id is empty.",
+                    Details = "Id of creator account cannot be empty."
+                });
+
+            await CourseRepository.DeleteAccountCoursesAsync(deletionAccountId);
+
+            return NoContent();
         }
 
         /// <summary>
