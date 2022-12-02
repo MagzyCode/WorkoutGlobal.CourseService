@@ -25,4 +25,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared messages\WorkoutGlobal.Shared\WorkoutGlobal.Shared.Messages\WorkoutGlobal.Shared.Messages.csproj" />
+  </ItemGroup>
+
 </Project>
