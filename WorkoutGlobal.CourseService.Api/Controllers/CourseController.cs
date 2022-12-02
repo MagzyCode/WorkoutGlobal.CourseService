@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
+using MassTransit;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using WorkoutGlobal.CourseService.Api.Contracts;
 using WorkoutGlobal.CourseService.Api.Dto;
 using WorkoutGlobal.CourseService.Api.Filters.ActionFilters;
 using WorkoutGlobal.CourseService.Api.Models;
+using WorkoutGlobal.Shared.Messages;
 
 namespace WorkoutGlobal.CourseService.Api.Controllers
 {
@@ -15,39 +18,36 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
     [Produces("application/json")]
     public class CourseController : ControllerBase
     {
-        private ICourseRepository _courseRepository;
-        private IMapper _mapper;
-
         /// <summary>
         /// Ctor for course controller.
         /// </summary>
         /// <param name="courseRepository">Course repository.</param>
         /// <param name="mapper">AutoMapper instanse.</param>
+        /// <param name="publish">Publisher instanse.</param>
         public CourseController(
             ICourseRepository courseRepository,
-            IMapper mapper)
+            IMapper mapper,
+            IPublishEndpoint publish)
         {
             CourseRepository = courseRepository;
             Mapper = mapper;
+            Publisher = publish;
         }
+
+        /// <summary>
+        /// Publish service.
+        /// </summary>
+        public IPublishEndpoint Publisher { get; private set; }
 
         /// <summary>
         /// Repository manager.
         /// </summary>
-        public ICourseRepository CourseRepository
-        {
-            get => _courseRepository;
-            private set => _courseRepository = value ?? throw new NullReferenceException(nameof(value));
-        }
-
+        public ICourseRepository CourseRepository { get; private set; }
+    
         /// <summary>
         /// Auto mapping helper.
         /// </summary>
-        public IMapper Mapper
-        {
-            get => _mapper;
-            private set => _mapper = value ?? throw new NullReferenceException(nameof(value));
-        }
+        public IMapper Mapper { get; private set; }
 
         /// <summary>
         /// Get course by id.
@@ -76,12 +76,18 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
             var course = await CourseRepository.GetCourseAsync(id);
 
             if (course is null)
+            {
+                await Publisher.Publish<CreateLogMessage>(
+                    message: new($"Course cannot be found with given id: {id}", "Info"));
+
                 return NotFound(new ErrorDetails()
                 {
                     StatusCode = StatusCodes.Status404NotFound,
-                    Message = "Model not found.",
+                    Message = "Course not found.",
                     Details = "Cannot find model with given id."
                 });
+            }
+                
 
             var courseDto = Mapper.Map<CourseDto>(course);
 
@@ -251,6 +257,74 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
             var lessonsDto = Mapper.Map<IEnumerable<LessonDto>>(lessons);
 
             return Ok(lessonsDto);
+        }
+
+        /// <summary>
+        /// Partial update of user info in course models.
+        /// </summary>
+        /// <param name="updationCreatorId">Creator id.</param>
+        /// <param name="patchDocument">Patch document.</param>
+        /// <returns></returns>
+        /// <response code="204">Course was successfully patched.</response>
+        /// <response code="400">Incoming id isn't valid.</response>
+        /// <response code="500">Something going wrong on server.</response>
+        [HttpPatch("{updationCreatorId}")]
+        [ProducesResponseType(type: typeof(int), statusCode: StatusCodes.Status204NoContent)]
+        [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateCreator(Guid updationCreatorId, [FromBody] JsonPatchDocument<UpdationCourseDto> patchDocument)
+        {
+            if (patchDocument is null)
+                return BadRequest(new ErrorDetails()
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Patch document is null",
+                    Details = "Patch document for partial updaton of course model is null."
+                });
+
+            if (updationCreatorId == Guid.Empty)
+                return BadRequest(new ErrorDetails()
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Creator account id is empty.",
+                    Details = "Id of creator account cannot be empty."
+                });
+
+            var updationDto = new UpdationCourseDto();
+            patchDocument.ApplyTo(updationDto);
+
+            var updationModel = Mapper.Map<Course>(updationDto);
+
+            await CourseRepository.UpdateAccountCoursesAsync(updationCreatorId, updationModel);
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Delete account courses.
+        /// </summary>
+        /// <param name="deletionAccountId">Deleted account id.</param>
+        /// <returns></returns>
+        /// <response code="204">Courses was successfully deleted.</response>
+        /// <response code="400">Incoming id isn't valid.</response>
+        /// <response code="500">Something going wrong on server.</response>
+        [HttpDelete("creators/{deletionAccountId}")]
+        [ProducesResponseType(type: typeof(int), statusCode: StatusCodes.Status204NoContent)]
+        [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(type: typeof(ErrorDetails), statusCode: StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteUserVideos(Guid deletionAccountId)
+        {
+            if (deletionAccountId == Guid.Empty)
+                return BadRequest(new ErrorDetails()
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Creator account id is empty.",
+                    Details = "Id of creator account cannot be empty."
+                });
+
+            await CourseRepository.DeleteAccountCoursesAsync(deletionAccountId);
+
+            return NoContent();
         }
 
         /// <summary>

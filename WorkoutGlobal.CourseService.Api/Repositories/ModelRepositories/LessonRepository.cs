@@ -97,5 +97,43 @@ namespace WorkoutGlobal.CourseService.Api.Repositories
 
             await SaveChangesAsync();
         }
+
+        /// <summary>
+        /// Update change video info in lessons.
+        /// </summary>
+        /// <param name="updationVideoId">Updation video id.</param>
+        /// <param name="updateModel">Updation model.</param>
+        /// <returns></returns>
+        public async Task UpdateLessonsVideoInfoAsync(string updationVideoId, Lesson updateModel)
+        {
+            var lessonsForUpdate = await Context.CourseLessons
+                .Where(lesson => lesson.VideoId == updationVideoId)
+                .ToListAsync();
+
+            foreach (var lesson in lessonsForUpdate)
+            {
+                lesson.VideoId = updateModel.VideoId;
+                lesson.VideoTitle = updateModel.VideoTitle;
+                lesson.VideoDescription = updateModel.VideoDescription;
+            }
+
+            await SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Delete account courses.
+        /// </summary>
+        /// <param name="deletionVideoId">Deletion account id.</param>
+        /// <returns></returns>
+        public async Task DeleteLessonsVideoInfoAsync(string deletionVideoId)
+        {
+            var lessonForClear = Context.CourseLessons
+                .Where(lesson => lesson.VideoId == deletionVideoId);
+
+            foreach (var lesson in lessonForClear)
+                lesson.VideoId = lesson.VideoTitle = lesson.VideoDescription = null; 
+
+            await SaveChangesAsync();
+        }
     }
 }

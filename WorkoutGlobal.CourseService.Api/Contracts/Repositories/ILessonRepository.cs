@@ -48,5 +48,20 @@ namespace WorkoutGlobal.CourseService.Api.Contracts
         /// <param name="lessonId">Lesson id.</param>
         /// <returns>Return course of lesson.</returns>
         public Task<Course> GetLessonCourseAsync(Guid lessonId);
+
+        /// <summary>
+        /// Update change video info in lessons.
+        /// </summary>
+        /// <param name="updationVideoId">Updation video id.</param>
+        /// <param name="updateModel">Updation model.</param>
+        /// <returns></returns>
+        public Task UpdateLessonsVideoInfoAsync(string updationVideoId, Lesson updateModel);
+
+        /// <summary>
+        /// Delete account courses.
+        /// </summary>
+        /// <param name="deletionVideoId">Deletion account id.</param>
+        /// <returns></returns>
+        public Task DeleteLessonsVideoInfoAsync(string deletionVideoId);
     }
 }

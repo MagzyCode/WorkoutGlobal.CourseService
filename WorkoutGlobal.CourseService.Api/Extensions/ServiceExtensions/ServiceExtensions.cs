@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using WorkoutGlobal.CourseService.Api.Contracts;
 using WorkoutGlobal.CourseService.Api.DbContext;
 using WorkoutGlobal.CourseService.Api.Filters.ActionFilters;
@@ -37,5 +38,22 @@ namespace WorkoutGlobal.CourseService.Api.Extensions
         /// </summary>
         /// <param name="services">Project services.</param>
         public static void ConfigureAttributes(this IServiceCollection services) => services.AddScoped<ModelValidationFilterAttribute>();
+
+        /// <summary>
+        /// Configure MassTransit.
+        /// </summary>
+        /// <param name="services">Project services.</param>
+        /// <param name="configuration">Project configuration.</param>
+        public static void ConfigureMassTransit(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddMassTransit(options =>
+            {
+                options.UsingRabbitMq((ctx, cfg) =>
+                {
+                    cfg.Host(configuration["MassTransitSettings:Host"]);
+                });
+            });
+            services.AddMassTransitHostedService();
+        }
     }
 }
