@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
+using MassTransit;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using System.Xml.XPath;
 using WorkoutGlobal.CourseService.Api.Contracts;
 using WorkoutGlobal.CourseService.Api.Dto;
 using WorkoutGlobal.CourseService.Api.Filters.ActionFilters;
 using WorkoutGlobal.CourseService.Api.Models;
+using WorkoutGlobal.Shared.Messages;
 
 namespace WorkoutGlobal.CourseService.Api.Controllers
 {
@@ -17,39 +18,36 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
     [Produces("application/json")]
     public class CourseController : ControllerBase
     {
-        private ICourseRepository _courseRepository;
-        private IMapper _mapper;
-
         /// <summary>
         /// Ctor for course controller.
         /// </summary>
         /// <param name="courseRepository">Course repository.</param>
         /// <param name="mapper">AutoMapper instanse.</param>
+        /// <param name="publish">Publisher instanse.</param>
         public CourseController(
             ICourseRepository courseRepository,
-            IMapper mapper)
+            IMapper mapper,
+            IPublishEndpoint publish)
         {
             CourseRepository = courseRepository;
             Mapper = mapper;
+            Publisher = publish;
         }
+
+        /// <summary>
+        /// Publish service.
+        /// </summary>
+        public IPublishEndpoint Publisher { get; private set; }
 
         /// <summary>
         /// Repository manager.
         /// </summary>
-        public ICourseRepository CourseRepository
-        {
-            get => _courseRepository;
-            private set => _courseRepository = value ?? throw new NullReferenceException(nameof(value));
-        }
-
+        public ICourseRepository CourseRepository { get; private set; }
+    
         /// <summary>
         /// Auto mapping helper.
         /// </summary>
-        public IMapper Mapper
-        {
-            get => _mapper;
-            private set => _mapper = value ?? throw new NullReferenceException(nameof(value));
-        }
+        public IMapper Mapper { get; private set; }
 
         /// <summary>
         /// Get course by id.
@@ -78,12 +76,18 @@ namespace WorkoutGlobal.CourseService.Api.Controllers
             var course = await CourseRepository.GetCourseAsync(id);
 
             if (course is null)
+            {
+                await Publisher.Publish<CreateLogMessage>(
+                    message: new($"Course cannot be found with given id: {id}", "Info"));
+
                 return NotFound(new ErrorDetails()
                 {
                     StatusCode = StatusCodes.Status404NotFound,
-                    Message = "Model not found.",
+                    Message = "Course not found.",
                     Details = "Cannot find model with given id."
                 });
+            }
+                
 
             var courseDto = Mapper.Map<CourseDto>(course);
 
